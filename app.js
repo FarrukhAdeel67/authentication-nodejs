@@ -1,12 +1,22 @@
 const express = require('express');
 const exphbs = require("express-handlebars");
 const fileUpload = require('express-fileupload');
+const mysql = require('mysql2');
 const app = express();
 const port = process.env.port||4000;
 
 const handlebars = exphbs.create({ extname: ".hbs" });
 app.engine(".hbs", handlebars.engine);
 app.set("view engine", ".hbs");
+
+
+//conection pool
+var connection = mysql.createConnection({ 
+    host: 'localhost',
+    user:'root',
+    password:'pps993icp956',
+    database:'user_profile',
+});
 
 //defualt option
 app.use(express.json());
@@ -16,8 +26,14 @@ app.use(express.static('public'));
 app.use(express.static('upload'));
 
 app.get('',(req,res)=>{
-    res.render('index');
-})
+    if(connection){console.log('Database Connected...')}
+    connection.query('SELECT * FROM user WHERE id = "1"', (err, rows) => {
+        if (!err) {
+          res.render('index', { rows });
+        }
+      });
+  });   
+
 app.post('', (req,res )=>{
     let sampleFile;
     let uploadPath;
@@ -32,7 +48,15 @@ app.post('', (req,res )=>{
         if(err){
             return res.status(500).send(err);
         }
-        res.status(200).send('file uploaded...');
+       // res.status(200).send('file uploaded...');
+       connection.query(`UPDATE user SET profile_image = ? WHERE id = "1"`,[sampleFile.name], (err, rows) => {
+        if (!err) {
+          res.redirect('/');
+        }
+        else{
+            console.log(err);
+        }
+      });
     });
 })
 app.listen(port, ()=>{
