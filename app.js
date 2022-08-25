@@ -4,27 +4,23 @@ const fileUpload = require('express-fileupload');
 const mysql = require('mysql2');
 const app = express();
 const port = process.env.port||4000;
-
 const handlebars = exphbs.create({ extname: ".hbs" });
 app.engine(".hbs", handlebars.engine);
 app.set("view engine", ".hbs");
 
-
-//conection pool
+//Conection Pool
 var connection = mysql.createConnection({ 
     host: 'localhost',
     user:'root',
     password:'pps993icp956',
     database:'user_profile',
 });
-
-//defualt option
+//Defualt Option
 app.use(express.json());
 app.use(fileUpload());
-//static files 
+//Static Files 
 app.use(express.static('public'));
 app.use(express.static('upload'));
-
 app.get('',(req,res)=>{
     if(connection){console.log('Database Connected...')}
     connection.query('SELECT * FROM user WHERE id = "1"', (err, rows) => {
