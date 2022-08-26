@@ -22,7 +22,10 @@ app.use(fileUpload());
 app.use(express.static('public'));
 app.use(express.static('upload'));
 app.get('',(req,res)=>{
-    if(connection){console.log('Database Connected...')}
+    if(connection){
+      console.log('Database Connected...')
+    }
+    //mysql querry.
     connection.query('SELECT * FROM user WHERE id = "1"', (err, rows) => {
         if (!err) {
           res.render('index', { rows });
