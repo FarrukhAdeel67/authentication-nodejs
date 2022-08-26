@@ -42,12 +42,11 @@ app.post('', (req,res )=>{
     sampleFile = req.files.sampleFile;
     uploadPath = __dirname + '/upload/' + sampleFile.name;
     console.log(sampleFile);
-    //user mv() funciion to place file on the server
+    //user mv() function to place file on the server
     sampleFile.mv(uploadPath, function (err){
         if(err){
             return res.status(500).send(err);
         }
-       // res.status(200).send('file uploaded...');
        connection.query(`UPDATE user SET profile_image = ? WHERE id = "1"`,[sampleFile.name], (err, rows) => {
         if (!err) {
           res.redirect('/');
